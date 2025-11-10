@@ -1,0 +1,246 @@
+<--------- acitivity_main.xml --------->
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="14dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:layout_marginTop="30dp"
+        android:text="Registeration"/>
+
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:inputType="textPersonName"/>
+    <EditText
+        android:id="@+id/Email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"/>
+    <EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="phone"
+        android:inputType="phone"/>
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="password"
+        android:inputType="textPassword"/>
+    <Spinner
+        android:id="@+id/spin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:spinnerMode="dropdown"/>
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Submit" />
+</LinearLayout>
+
+
+<--------- MainActivity.java --------->
+
+package com.example.intentregvalidation;
+
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import android.util.Patterns;
+
+import com.example.intentregvalidation.R;
+
+
+public class MainActivity extends AppCompatActivity {
+    private EditText username;
+    private EditText Email;
+    private EditText phone;
+    private EditText password;
+    private Spinner spin;
+    private Button btn;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+
+        username = findViewById(R.id.username);
+        Email = findViewById(R.id.Email);
+        phone = findViewById(R.id.phone);
+        password = findViewById(R.id.password);
+        spin = findViewById(R.id.spin);
+        btn = findViewById(R.id.btn);
+
+
+        String[] items = new String[]{"Select Gender","Male","Female","Other"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                items
+        );
+        spin.setAdapter(adapter);
+
+
+        btn.setOnClickListener( v ->{
+            String name = username.getText().toString();
+            String email = Email.getText().toString();
+            String ph = phone.getText().toString();
+            String pass = password.getText().toString();
+            String gen = spin.getSelectedItem().toString();
+
+            if(TextUtils.isEmpty(name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(ph) || TextUtils.isEmpty(pass)){
+                Toast.makeText(this, "Please enter details!", Toast.LENGTH_SHORT).show();
+            }
+            else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                Toast.makeText(this, "Enter valid email", Toast.LENGTH_SHORT).show();
+            }
+            else if(ph.length() != 10){
+                Toast.makeText(this, "Enter valid phone number", Toast.LENGTH_SHORT).show();
+            }else if(pass.length() < 8){
+                Toast.makeText(this, "Enter valid password", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity2.class);
+
+                intent.putExtra("name",name.toString());
+                intent.putExtra("email",email.toString());
+                intent.putExtra("phone",ph.toString());
+                intent.putExtra("password",pass.toString());
+                intent.putExtra("gender",gen.toString());
+
+                startActivity(intent);
+            }
+        });
+
+
+    }
+}
+
+
+<--------- acitivity_main2.xml --------->
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="14dp"
+    tools:context=".MainActivity2">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:layout_marginTop="30dp"
+        android:text="Home Page"/>
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/name1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/email1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/phone1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/pass1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/gender1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
+
+
+<--------- MainActivity2.java --------->
+
+package com.example.intentregvalidation;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.TextView;
+
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+
+
+public class MainActivity2 extends AppCompatActivity {
+    private TextView name1;
+    private TextView email1;
+    private TextView phone1;
+    private TextView pass1;
+    private TextView gender1;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main2);
+
+
+        name1 = findViewById(R.id.name1);
+        email1 = findViewById(R.id.email1);
+        phone1 = findViewById(R.id.phone1);
+        pass1 = findViewById(R.id.pass1);
+        gender1 = findViewById(R.id.gender1);
+
+
+        Intent intent = getIntent();
+
+        String name = intent.getStringExtra("name");
+        String email = intent.getStringExtra("email");
+        String phone = intent.getStringExtra("phone");
+        String pass = intent.getStringExtra("password");
+        String gen = intent.getStringExtra(("gender"));
+
+
+        name1.setText("Name : "+name);
+        email1.setText("Email : "+email);
+        phone1.setText("Phone : "+phone);
+        pass1.setText("Password : "+pass);
+        gender1.setText("Gender : "+gen);
+    }
+}
